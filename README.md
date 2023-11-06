@@ -85,14 +85,50 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 
 
 
-            <div className="content_news">
-  {newsHeadlines
-    .filter((news) => news.isTrending) // Filter trending news
-    .map((news, index) => (
-      <div className='news_card' key={news.id}>
-        <img
-          className="w-20 h-20 object-cover rounded-full border-2 border-indigo-500"
-          src={news.urlToImage || 'placeholder.jpg'}
-          alt="News"
-        />
+import React, { useState } from 'react';
+import './NewsSlider.css'; // You'll need to create this CSS file for styling.
+
+function NewsSlider({ newsHeadlines }) {
+  const [currentPosition, setCurrentPosition] = useState(0);
+
+  const handleSlideLeft = () => {
+    if (currentPosition > 0) {
+      setCurrentPosition(currentPosition - 1);
+    }
+  };
+
+  const handleSlideRight = () => {
+    if (currentPosition < newsHeadlines.length - 7) {
+      setCurrentPosition(currentPosition + 1);
+    }
+  };
+
+  return (
+    <div className='news_container'>
+      <div>
+        <h1>Trending</h1>
+        <div className="news_icons">
+          <i className="fas fa-chevron-circle-left" onClick={handleSlideLeft}></i>
+          <i className="fas fa-chevron-circle-right" onClick={handleSlideRight}></i>
+        </div>
       </div>
+      <div className="content_news">
+        <div className="news_items" style={{ transform: `translateX(-${currentPosition * 20}rem)` }}>
+          {newsHeadlines
+            .slice(currentPosition, currentPosition + 7) 
+            .map((news, index) => (
+              <div className='news_card' key={news.id}>
+                <img
+                  className="w-20 h-20 object-cover rounded-full border-2 border-indigo-500"
+                  src={news.urlToImage || 'placeholder.jpg'}
+                  alt="News"
+                />
+              </div>
+            ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+export default NewsSlider;
