@@ -3,6 +3,19 @@ import React, { useState, useEffect } from 'react';
 function ArticleComponent() {
   const [appleArticles, setAppleArticles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentP, setCurrentP] = useState(0); // Initialize currentP to 0
+
+  const handleSlideLefts = () => {
+    if (currentP > 0) {
+      setCurrentP(currentP - 1);
+    }
+  };
+
+  const handleSlideRights = () => {
+    if (currentP < appleArticles.length - 5) {
+      setCurrentP(currentP + 1);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,19 +38,35 @@ function ArticleComponent() {
   }, []);
 
   return (
-    <div className="content_articles">
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        appleArticles.map((article, index) => (
-          <div className='article_card' key={article.id}>
-            <h2>{article.title}</h2>
-            <p>{article.description}</p>
-            {/* Add more elements to display other article information if needed */}
-          </div>
-        ))
-      )}
-    </div>
+    <>
+      <div className='news_header'>
+        <h1>Apple</h1>
+        <div className="news_icons">
+          <i className="fas fa-chevron-circle-left" onClick={handleSlideLefts}></i>
+          <i className="fas fa-chevron-circle-right" onClick={handleSlideRights}></i>
+        </div>
+      </div>
+      <div className="content_news">
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          appleArticles
+            .slice(currentP, currentP + 5) // Display only 5 articles based on currentP
+            .map((article, index) => (
+              <div className='news_card' key={article.id}>
+                <img
+                  className=''
+                  src={article.urlToImage || 'placeholder.jpg'}
+                  alt="News"
+                />
+                <div className='news_infor'>{article.title}</div>
+                {/* <p>{article.description}</p> */}
+                {/* Add more elements to display other article information if needed */}
+              </div>
+            ))
+        )}
+      </div>
+    </>
   );
 }
 
