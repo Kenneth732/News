@@ -1,4 +1,5 @@
 import React from 'react'
+import Logo from './images/logo.svg'
 
 function Navbar() {
     return (
@@ -21,7 +22,7 @@ function Navbar() {
                 <div classNameName="container">
                     <div classNameName="row">
                         <div classNameName="col-12 col-md-3 fh5co_padding_menu">
-                            <img src="images/logo.png" alt="img" classNameName="fh5co_logo_width" />
+                            <img src={Logo} alt="img" classNameName="fh5co_logo_width" />
                         </div>
                         <div classNameName="col-12 col-md-9 align-self-center fh5co_mediya_right">
                             <div classNameName="text-center d-inline-block">

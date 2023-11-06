@@ -68,3 +68,31 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/d
 ### `npm run build` fails to minify
 
 This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div className="content_news">
+  {newsHeadlines
+    .filter((news) => news.isTrending) // Filter trending news
+    .map((news, index) => (
+      <div className='news_card' key={news.id}>
+        <img
+          className="w-20 h-20 object-cover rounded-full border-2 border-indigo-500"
+          src={news.urlToImage || 'placeholder.jpg'}
+          alt="News"
+        />
+      </div>
