@@ -15,6 +15,29 @@ function NewsAggregator() {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedNews, setSelectedNews] = useState(null); // State for the selected news article
     const [currentPosition, setCurrentPosition] = useState(0);
+    const [currentP, setCurrentP] = useState(6);
+    const [teslaNews, setTeslaNews] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch('https://newsapi.org/v2/everything?q=tesla&from=2023-10-06&sortBy=publishedAt&apiKey=6cbdef411b3b47529a17b5cf4667303b');
+                if (response.ok) {
+                    const data = await response.json();
+                    setTeslaNews(data.articles);
+                } else {
+                    console.error('Error fetching news:', response.status, response.statusText);
+                }
+            } catch (error) {
+                console.error('Error fetching news:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     const handleSlideLeft = () => {
         if (currentPosition > 0) {
@@ -25,6 +48,18 @@ function NewsAggregator() {
     const handleSlideRight = () => {
         if (currentPosition < newsHeadlines.length - 7) {
             setCurrentPosition(currentPosition + 1);
+        }
+    };
+
+    const handleSlideLefts = () => {
+        if (currentP > 0) {
+            setCurrentP(currentP - 1);
+        }
+    };
+
+    const handleSlideRights = () => {
+        if (currentP < newsHeadlines.length - 7) {
+            setCurrentP(currentP + 1);
         }
     };
 
@@ -44,6 +79,7 @@ function NewsAggregator() {
             })
             .catch((error) => console.error('Error:', error));
     };
+
 
     const fetchNewsHeadlinesWithSearch = () => {
         fetch(`https://newsapi.org/v2/everything?q=${searchTerm}&apiKey=${API_KEY}`)
@@ -70,6 +106,7 @@ function NewsAggregator() {
                     </div>
                     <div class="col-md-6">
                         <div class="row">
+
                             <div class="col-md-6 col-6 paddding animate-box" data-animate-effect="fadeIn">
                                 <div class="fh5co_suceefh5co_height_2"><img src={New3} alt="img" />
                                     <div class="fh5co_suceefh5co_height_position_absolute"></div>
@@ -115,7 +152,8 @@ function NewsAggregator() {
             </div>
 
             <div className='news_container'>
-                <div>
+
+                <div className='news_header'>
                     <h1>Trending</h1>
                     <div className="news_icons">
                         <i className="fas fa-chevron-circle-left" onClick={handleSlideLeft}></i>
@@ -123,19 +161,47 @@ function NewsAggregator() {
                     </div>
                 </div>
                 <div className="content_news">
-                    <div className="news_items" style={{ transform: `translateX(-${currentPosition * 20}rem)` }}>
+                    <div className="content_news" >
                         {newsHeadlines
-                            .slice(currentPosition, currentPosition + 7)
+                            .slice(currentPosition, currentPosition + 3)
                             .map((news, index) => (
                                 <div className='news_card' key={news.id}>
                                     <img
-                                        className="w-20 h-20 object-cover rounded-full border-2 border-indigo-500"
+                                        className=''
                                         src={news.urlToImage || 'placeholder.jpg'}
                                         alt="News"
                                     />
+
+                                    <div className='news_infor'>{news.title}</div>
                                 </div>
                             ))}
                     </div>
+                </div>
+
+                <div className='news_header'>
+                    <h1>Tesla</h1>
+                    <div className="news_icons">
+                        <i className="fas fa-chevron-circle-left" onClick={handleSlideLefts}></i>
+                        <i className="fas fa-chevron-circle-right" onClick={handleSlideRights}></i>
+                    </div>
+                </div>
+                <div className="content_news">
+                    {loading ? (
+                        <p>Loading...</p>
+                    ) : (
+                        teslaNews
+                            .slice(currentP, currentP + 5)
+                            .map((news, index) => (
+                                <div className='news_card' key={news.id}>
+                                    <img
+                                        className=''
+                                        src={news.urlToImage || 'placeholder.jpg'}
+                                        alt="News"
+                                    />
+                                    <div className='news_infor'>{news.title}</div>
+                                </div>
+                            ))
+                    )}
                 </div>
             </div>
         </div>

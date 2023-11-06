@@ -85,50 +85,52 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 
 
 
-import React, { useState } from 'react';
-import './NewsSlider.css'; // You'll need to create this CSS file for styling.
+import React, { useState, useEffect } from 'react';
 
-function NewsSlider({ newsHeadlines }) {
-  const [currentPosition, setCurrentPosition] = useState(0);
+function NewsComponent() {
+  const [teslaNews, setTeslaNews] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const handleSlideLeft = () => {
-    if (currentPosition > 0) {
-      setCurrentPosition(currentPosition - 1);
-    }
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch('https://newsapi.org/v2/everything?q=tesla&from=2023-10-06&sortBy=publishedAt&apiKey=6cbdef411b3b47529a17b5cf4667303b');
+        if (response.ok) {
+          const data = await response.json();
+          setTeslaNews(data.articles);
+        } else {
+          console.error('Error fetching news:', response.status, response.statusText);
+        }
+      } catch (error) {
+        console.error('Error fetching news:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const handleSlideRight = () => {
-    if (currentPosition < newsHeadlines.length - 7) {
-      setCurrentPosition(currentPosition + 1);
-    }
-  };
+    fetchData();
+  }, []);
 
   return (
-    <div className='news_container'>
-      <div>
-        <h1>Trending</h1>
-        <div className="news_icons">
-          <i className="fas fa-chevron-circle-left" onClick={handleSlideLeft}></i>
-          <i className="fas fa-chevron-circle-right" onClick={handleSlideRight}></i>
-        </div>
-      </div>
-      <div className="content_news">
-        <div className="news_items" style={{ transform: `translateX(-${currentPosition * 20}rem)` }}>
-          {newsHeadlines
-            .slice(currentPosition, currentPosition + 7) 
-            .map((news, index) => (
-              <div className='news_card' key={news.id}>
-                <img
-                  className="w-20 h-20 object-cover rounded-full border-2 border-indigo-500"
-                  src={news.urlToImage || 'placeholder.jpg'}
-                  alt="News"
-                />
-              </div>
-            ))}
-        </div>
-      </div>
+    <div className="content_news">
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        teslaNews
+          .slice(currentP, currentP + 5)
+          .map((news, index) => (
+            <div className='news_card' key={news.id}>
+              <img
+                className=''
+                src={news.urlToImage || 'placeholder.jpg'}
+                alt="News"
+              />
+              <div className='news_infor'>{news.title}</div>
+            </div>
+          ))
+      )}
     </div>
   );
 }
 
-export default NewsSlider;
+export default NewsComponent;
