@@ -7,6 +7,7 @@ import New2 from './images/new2.jpg'
 import New3 from './images/new3.jpg'
 import New4 from './images/new4.jpg'
 import ArticleComponent from './ArticleComponent'
+import BusinessNewsComponent from './BusinessNewsComponent'
 
 const API_KEY = '6cbdef411b3b47529a17b5cf4667303b'
 
@@ -206,6 +207,8 @@ function NewsAggregator() {
                     )}
                 </div>
             </div>
+
+            <BusinessNewsComponent/>
         </div>
     )
 }

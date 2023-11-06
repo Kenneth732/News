@@ -87,22 +87,35 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 
 import React, { useState, useEffect } from 'react';
 
-function NewsComponent() {
-  const [teslaNews, setTeslaNews] = useState([]);
+function BusinessNewsComponent() {
+  const [businessNews, setBusinessNews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [currentP, setCurrentP] = useState(0);
+
+  const handleSlideLefts = () => {
+    if (currentP > 0) {
+      setCurrentP(currentP - 5); // Adjust by 5 to show previous 5 articles
+    }
+  };
+
+  const handleSlideRights = () => {
+    if (currentP < businessNews.length - 5) {
+      setCurrentP(currentP + 5); // Adjust by 5 to show next 5 articles
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://newsapi.org/v2/everything?q=tesla&from=2023-10-06&sortBy=publishedAt&apiKey=6cbdef411b3b47529a17b5cf4667303b');
+        const response = await fetch('https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=6cbdef411b3b47529a17b5cf4667303b');
         if (response.ok) {
           const data = await response.json();
-          setTeslaNews(data.articles);
+          setBusinessNews(data.articles);
         } else {
-          console.error('Error fetching news:', response.status, response.statusText);
+          console.error('Error fetching business news:', response.status, response.statusText);
         }
       } catch (error) {
-        console.error('Error fetching news:', error);
+        console.error('Error fetching business news:', error);
       } finally {
         setLoading(false);
       }
@@ -112,25 +125,35 @@ function NewsComponent() {
   }, []);
 
   return (
-    <div className="content_news">
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        teslaNews
-          .slice(currentP, currentP + 5)
-          .map((news, index) => (
-            <div className='news_card' key={news.id}>
-              <img
-                className=''
-                src={news.urlToImage || 'placeholder.jpg'}
-                alt="News"
-              />
-              <div className='news_infor'>{news.title}</div>
-            </div>
-          ))
-      )}
-    </div>
+    <>
+      <div className='news_header'>
+        <h1>Business News</h1>
+        <div className="news_icons">
+          <i className="fas fa-chevron-circle-left" onClick={handleSlideLefts}></i>
+          <i className="fas fa-chevron-circle-right" onClick={handleSlideRights}></i>
+        </div>
+      </div>
+      <div className="content_news">
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          businessNews
+            .slice(currentP, currentP + 5) // Display the next 5 articles based on currentP
+            .map((article, index) => (
+              <div className='news_card' key={article.id}>
+                <img
+                  className=''
+                  src={article.urlToImage || 'placeholder.jpg'}
+                  alt="News"
+                />
+                <div className='news_infor'>{article.title}</div>
+                {/* Add more elements to display other article information if needed */}
+              </div>
+            ))
+        )}
+      </div>
+    </>
   );
 }
 
-export default NewsComponent;
+export default BusinessNewsComponent;
